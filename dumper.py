@@ -1,24 +1,28 @@
-import discord
+import urllib3
+from bs4 import BeautifulSoup
+from discord import Game
+from discord.ext.commands import Bot
 
+BOT_PREFIX = ("?", "!")
 TOKEN = 'NTI3NTY4NjY5NzQ0NTYyMTc5.DwWeRA.ZlY1xG6NZqzbhFcdFNpzKDivdbs'
 
-client = discord.Client()
+client = Bot(command_prefix=BOT_PREFIX)
 
-@client.event
-async def on_message(message):
-    # we do not want the bot to reply to itself
-    if message.author == client.user:
-        return
 
-    if message.content.startswith('!hello'):
-        msg = 'Hello {0.author.mention}'.format(message)
-        await client.send_message(message.channel, msg)
+@client.command(name='dump',
+                description="grabs some random memes from worksafe GIF on 4chan",
+                brief="dumps some memes",
+                aliases=['meme', 'memes'],
+                pass_context=True)
+async def dump(context):
+    url = 'http://boards.4channel.org/wsg/'
+    await client.say("If u don't like them go do it yourself, " + context.message.author.mention)
+
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
+    await client.change_presence(game=Game(name="with memes"))
+    print("Logged in as " + client.user.name)
+
 
 client.run(TOKEN)
